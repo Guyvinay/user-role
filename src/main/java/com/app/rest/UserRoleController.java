@@ -25,7 +25,6 @@ public class UserRoleController {
 
     private final UserRoleService userRoleService;
 
-    // Create Role
     @PostMapping
     public ResponseEntity<UserRoleDto> createRole(@RequestBody @Valid UserRoleDto dto) {
         UserRoleDto saved = userRoleService.saveRole(dto);

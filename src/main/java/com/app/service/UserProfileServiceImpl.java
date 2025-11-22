@@ -1,6 +1,7 @@
 package com.app.service;
 
 import com.app.dto.UserProfileDto;
+import com.app.exception.CustomException;
 import com.app.model.UserProfile;
 import com.app.repo.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class UserProfileServiceImpl implements UserProfileService{
 
         // Validate if user already exists if it does throw exception.
         if (userRepo.existsByEmail(userDto.getEmail()))
-            throw new RuntimeException("Email already exists: " + userDto.getEmail());
+            throw new CustomException("Email already exists: " + userDto.getEmail());
 
         log.info("User to be saved {}", userDto.getEmail());
         UserProfile saved = userRepo.save(toEntity(userDto));
@@ -37,7 +38,7 @@ public class UserProfileServiceImpl implements UserProfileService{
     public UserProfileDto getUserById(UUID id) {
         log.info("Getting user with id: {}", id);
         UserProfile user = userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found: " + id));
+                .orElseThrow(() -> new CustomException("User not found: " + id));
         log.info("User found with id: {}", id);
         return toDto(user);
     }
@@ -56,7 +57,7 @@ public class UserProfileServiceImpl implements UserProfileService{
     @Override
     public UserProfileDto updateUser(UUID id, UserProfileDto dto) {
         UserProfile user = userRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found: " + id));
+                .orElseThrow(() -> new CustomException("User not found: " + id));
 
         user.setName(dto.getName());
         user.setAddress(dto.getAddress());
@@ -75,7 +76,7 @@ public class UserProfileServiceImpl implements UserProfileService{
     @Transactional
     public String deleteUser(UUID id) {
         if (!userRepo.existsById(id))
-            throw new RuntimeException("User not found: " + id);
+            throw new CustomException("User not found: " + id);
 
         userRepo.deleteById(id);
         log.info("User deleted for id: {}", id);
